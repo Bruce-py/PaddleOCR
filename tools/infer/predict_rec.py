@@ -639,7 +639,7 @@ def main(args):
         img = np.random.uniform(0, 255, [48, 320, 3]).astype(np.uint8)
         for i in range(2):
             res = text_recognizer([img] * int(args.rec_batch_num))
-
+    _st = time.time()
     for image_file in image_file_list:
         img, flag, _ = check_and_read(image_file)
         if not flag:
@@ -661,6 +661,14 @@ def main(args):
                                                rec_res[ino]))
     if args.benchmark:
         text_recognizer.autolog.report()
+
+    res_save_dir = "/data2/slgao/PaddleOCR/inference_results"
+    os.makedirs(res_save_dir, exist_ok=True)
+    with open(os.path.join(res_save_dir, "rec_results.txt"), 'w') as f:
+        f.writelines(str(rec_res))
+
+    print(f"The predict total time is {time.time() - _st}, number of images is {len(image_file_list)}, "
+          f"path of results if {res_save_dir}.")
 
 
 if __name__ == "__main__":

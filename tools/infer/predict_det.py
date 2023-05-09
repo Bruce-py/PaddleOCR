@@ -26,6 +26,7 @@ import time
 import sys
 
 import tools.infer.utility as utility
+from tqdm import tqdm
 from ppocr.utils.logging import get_logger
 from ppocr.utils.utility import get_image_file_list, check_and_read
 from ppocr.data import create_operators, transform
@@ -296,7 +297,8 @@ if __name__ == "__main__":
             res = text_detector(img)
 
     save_results = []
-    for idx, image_file in enumerate(image_file_list):
+    _st = time.time()
+    for idx, image_file in tqdm.tqdm(enumerate(image_file_list), total=len(image_file_list)):
         img, flag_gif, flag_pdf = check_and_read(image_file)
         if not flag_gif and not flag_pdf:
             img = cv2.imread(image_file)
@@ -324,6 +326,7 @@ if __name__ == "__main__":
                     json.dumps([x.tolist() for x in dt_boxes])) + "\n"
             save_results.append(save_pred)
             logger.info(save_pred)
+            """
             if len(imgs) > 1:
                 logger.info("{}_{} The predict time of {}: {}".format(
                     idx, index, image_file, elapse))
@@ -345,9 +348,11 @@ if __name__ == "__main__":
                 "det_res_{}".format(os.path.basename(save_file)))
             cv2.imwrite(img_path, src_im)
             logger.info("The visualized image saved in {}".format(img_path))
-
+            """
     with open(os.path.join(draw_img_save_dir, "det_results.txt"), 'w') as f:
         f.writelines(save_results)
         f.close()
+    print(f"The predict total time is {time.time() - _st}, number of images is {len(image_file_list)}, "
+          f"path of results if {draw_img_save_dir}.")
     if args.benchmark:
         text_detector.autolog.report()

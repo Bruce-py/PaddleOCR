@@ -27,6 +27,7 @@ import numpy as np
 import json
 import time
 import logging
+from tqdm import tqdm
 from PIL import Image
 import tools.infer.utility as utility
 import tools.infer.predict_rec as predict_rec
@@ -138,7 +139,7 @@ def main(args):
     image_file_list = get_image_file_list(args.image_dir)
     image_file_list = image_file_list[args.process_id::args.total_process_num]
     text_sys = TextSystem(args)
-    is_visualize = True
+    is_visualize = False
     font_path = args.vis_font_path
     drop_score = args.drop_score
     draw_img_save_dir = args.draw_img_save_dir
@@ -160,7 +161,8 @@ def main(args):
     cpu_mem, gpu_mem, gpu_util = 0, 0, 0
     _st = time.time()
     count = 0
-    for idx, image_file in enumerate(image_file_list):
+    for idx, image_file in tqdm.tqdm(enumerate(image_file_list), total=len(image_file_list)) if args.process_id==0 else \
+            enumerate(image_file_list):
 
         img, flag_gif, flag_pdf = check_and_read(image_file)
         if not flag_gif and not flag_pdf:
@@ -232,7 +234,7 @@ def main(args):
                     os.path.join(draw_img_save_dir, os.path.basename(
                         save_file))))
 
-    logger.info("The predict total time is {}".format(time.time() - _st))
+    # logger.info("The predict total time is {}".format(time.time() - _st))
     if args.benchmark:
         text_sys.text_detector.autolog.report()
         text_sys.text_recognizer.autolog.report()
@@ -242,6 +244,9 @@ def main(args):
             'w',
             encoding='utf-8') as f:
         f.writelines(save_results)
+
+    print(f"The predict total time is {time.time() - _st}, number of images is {len(image_file_list)}, "
+          f"path of results if {draw_img_save_dir}.")
 
 
 if __name__ == "__main__":
