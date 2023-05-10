@@ -298,7 +298,7 @@ if __name__ == "__main__":
 
     save_results = []
     _st = time.time()
-    for idx, image_file in tqdm.tqdm(enumerate(image_file_list), total=len(image_file_list)):
+    for idx, image_file in tqdm(enumerate(image_file_list), total=len(image_file_list)):
         img, flag_gif, flag_pdf = check_and_read(image_file)
         if not flag_gif and not flag_pdf:
             img = cv2.imread(image_file)

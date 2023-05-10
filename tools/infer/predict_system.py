@@ -161,7 +161,7 @@ def main(args):
     cpu_mem, gpu_mem, gpu_util = 0, 0, 0
     _st = time.time()
     count = 0
-    for idx, image_file in tqdm.tqdm(enumerate(image_file_list), total=len(image_file_list)) if args.process_id==0 else \
+    for idx, image_file in tqdm(enumerate(image_file_list), total=len(image_file_list)) if args.process_id==0 else \
             enumerate(image_file_list):
 
         img, flag_gif, flag_pdf = check_and_read(image_file)
