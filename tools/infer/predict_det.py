@@ -325,7 +325,7 @@ if __name__ == "__main__":
                 save_pred = os.path.basename(image_file) + "\t" + str(
                     json.dumps([x.tolist() for x in dt_boxes])) + "\n"
             save_results.append(save_pred)
-            logger.info(save_pred)
+            # logger.info(save_pred)
             """
             if len(imgs) > 1:
                 logger.info("{}_{} The predict time of {}: {}".format(
