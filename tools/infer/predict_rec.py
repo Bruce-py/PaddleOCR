@@ -656,16 +656,18 @@ def main(args):
         logger.info(traceback.format_exc())
         logger.info(E)
         exit()
-    for ino in range(len(img_list)):
-        logger.info("Predicts of {}:{}".format(valid_image_file_list[ino],
-                                               rec_res[ino]))
+    # for ino in range(len(img_list)):
+    #     logger.info("Predicts of {}:{}".format(valid_image_file_list[ino],
+    #                                            rec_res[ino]))
     if args.benchmark:
         text_recognizer.autolog.report()
 
-    res_save_dir = "/data2/slgao/PaddleOCR/inference_results"
+    res_save_dir = args.draw_img_save_dir
     os.makedirs(res_save_dir, exist_ok=True)
-    with open(os.path.join(res_save_dir, "rec_results.txt"), 'w') as f:
-        f.writelines(str(rec_res))
+    results = "\n".join([os.path.split(valid_image_file_list[ino])[-1] + "\t" + rec_res[ino][0]
+                         for ino in range(len(img_list))])
+    with open(res_save_dir, 'w') as f:
+        f.writelines(results)
 
     print(f"The predict total time is {time.time() - _st}, number of images is {len(image_file_list)}, "
           f"path of results if {res_save_dir}.")
