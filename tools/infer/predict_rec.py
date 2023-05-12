@@ -666,7 +666,7 @@ def main(args):
     os.makedirs(res_save_dir, exist_ok=True)
     results = "\n".join([os.path.split(valid_image_file_list[ino])[-1] + "\t" + rec_res[ino][0]
                          for ino in range(len(img_list))])
-    with open(res_save_dir, 'w') as f:
+    with open(os.path.join(res_save_dir, "rec_results.txt"), 'w') as f:
         f.writelines(results)
 
     print(f"The predict total time is {time.time() - _st}, number of images is {len(image_file_list)}, "
