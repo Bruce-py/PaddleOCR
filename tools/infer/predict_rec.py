@@ -664,10 +664,12 @@ def main(args):
 
     res_save_dir = args.draw_img_save_dir
     os.makedirs(res_save_dir, exist_ok=True)
-    results = "\n".join([os.path.split(valid_image_file_list[ino])[-1] + "\t" + rec_res[ino][0]
-                         for ino in range(len(img_list))])
-    with open(os.path.join(res_save_dir, "rec_results.txt"), 'w') as f:
-        f.writelines(results)
+    res_save_txt = os.path.join(res_save_dir, "rec_results.txt")
+    with open(res_save_txt, 'w') as f:
+        for ino in range(len(img_list)):
+            name = os.path.split(valid_image_file_list[ino])[-1].strip()
+            pred = rec_res[ino][0].strip()
+            f.write(name + "\t" + pred.lower() + "\n")
 
     print(f"The predict total time is {time.time() - _st}, number of images is {len(image_file_list)}, "
           f"path of results if {res_save_dir}.")
